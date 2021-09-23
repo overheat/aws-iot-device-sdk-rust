@@ -1,0 +1,10 @@
+[package]
+name = "aws-iot-embedded-sdk"
+version = "0.0.1"
+authors = ["awsa2ron <kaixu@amazon.com>"]
+edition = "2018"
+description = "aws iot embedded sdk in rust (unofficial)"
+license = "MIT"
+
+[dependencies]
+arrayvec = "0.7"
