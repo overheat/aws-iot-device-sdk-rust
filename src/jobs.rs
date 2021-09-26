@@ -10,7 +10,6 @@ const API_GETPENDING: &str = "get";
 const API_STARTNEXT: &str = "start-next";
 const API_DESCRIBE: &str = "get";
 const API_UPDATE: &str = "update";
-// const API_JOBID_NEXT: &str = "$next";
 
 /// The struct outputs which API the topic is for. It also outputs
 /// the thing name in the given topic.
@@ -103,10 +102,10 @@ fn suffix(topic_type: &Topic) -> &str {
 /// use aws_iot_embedded_sdk_rust::jobs::Topic::*;
 /// use aws_iot_embedded_sdk_rust::{jobs};
 /// 
-/// let jobs = jobs::match_topic("$aws/things/chloe/jobs/example-job-01/get/accepted").unwrap();
+/// let jobs = jobs::match_topic("$aws/things/chloe/jobs/API_JOBID_NEXT/get/accepted").unwrap();
 /// assert_eq!(jobs.api, jobs::Topic::DescribeSuccess);
 /// let id = jobs.id.unwrap();
-/// assert_eq!(&id[..], "example-job-01")
+/// assert_eq!(&id[..], API_JOBID_NEXT)
 ///
 /// ```
 pub fn match_topic(topic: &str) -> Result<ThingJobs, Error> {
@@ -199,6 +198,15 @@ pub fn start_next(thing_name: &str) -> Result<ArrayString<THINGNAME_MAX_LENGTH>,
 }
 /// Populate a topic string for a DescribeJobExecution request.
 ///
+/// # Example
+/// ```
+/// use aws_iot_embedded_sdk_rust::jobs::Topic::*;
+/// use aws_iot_embedded_sdk_rust::{jobs};
+/// 
+/// let topic = jobs::describe("chloe", API_JOBID_NEXT).unwrap();
+/// assert_eq!(&topic[..], "$aws/things/chloe/jobs/$next/get")
+///
+/// ```
 pub fn describe(thing_name: &str, id: &str) -> Result<ArrayString<THINGNAME_MAX_LENGTH>, Error> {
     is_valid_thing_name(thing_name)?;
     is_valid_job_id(id)?;
