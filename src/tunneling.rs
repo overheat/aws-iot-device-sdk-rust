@@ -11,7 +11,7 @@ const API_CHANGED: &str = "notify";
 ///
 /// let tunnels = tunneling::match_topic("$aws/things/chloe/tunnels/notify");
 /// assert_eq!(tunnels, Ok(()));
-/// 
+///
 /// ```
 pub fn match_topic(topic: &str) -> Result<(), Error> {
     // $aws/things/thing-name/tunnels/notify

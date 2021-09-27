@@ -1,10 +1,13 @@
 [package]
-name = "aws-iot-embedded-sdk"
-version = "0.0.1"
+name = "aws-iot-device-sdk"
+version = "0.0.2"
 authors = ["awsa2ron <kaixu@amazon.com>"]
-edition = "2018"
-description = "aws iot embedded sdk in rust (unofficial)"
+edition = "2021"
+description = "aws iot device sdk in rust (unofficial)"
 license = "MIT"
 
 [dependencies]
-arrayvec = "0.7"
+arrayvec = { version = "0.7", default-features = false }
+
+[features]
+std = []

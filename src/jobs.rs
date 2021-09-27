@@ -10,6 +10,7 @@ const API_GETPENDING: &str = "get";
 const API_STARTNEXT: &str = "start-next";
 const API_DESCRIBE: &str = "get";
 const API_UPDATE: &str = "update";
+const API_JOBID_NEXT: &str = "$next";
 
 /// The struct outputs which API the topic is for. It also outputs
 /// the thing name in the given topic.
@@ -19,9 +20,9 @@ pub struct ThingJobs<'a> {
     pub id: Option<ArrayString<JOBID_MAX_LENGTH>>,
 }
 
-/// 
+///
 /// Topic values for subscription requests.
-/// 
+///
 #[derive(Debug, PartialEq, PartialOrd)]
 pub enum Topic {
     JobsChanged,
@@ -43,7 +44,7 @@ pub enum Topic {
 /// ```
 /// use aws_iot_embedded_sdk_rust::jobs::Topic::*;
 /// use aws_iot_embedded_sdk_rust::{jobs};
-/// 
+///
 /// let jobs = jobs::match_topic("$aws/things/chloe/jobs/notify-next").unwrap();
 /// assert_eq!(jobs.api, jobs::Topic::NextJobChanged);
 /// assert_eq!(jobs.id, None);
@@ -101,7 +102,7 @@ fn suffix(topic_type: &Topic) -> &str {
 /// ```
 /// use aws_iot_embedded_sdk_rust::jobs::Topic::*;
 /// use aws_iot_embedded_sdk_rust::{jobs};
-/// 
+///
 /// let jobs = jobs::match_topic("$aws/things/chloe/jobs/API_JOBID_NEXT/get/accepted").unwrap();
 /// assert_eq!(jobs.api, jobs::Topic::DescribeSuccess);
 /// let id = jobs.id.unwrap();
@@ -202,14 +203,16 @@ pub fn start_next(thing_name: &str) -> Result<ArrayString<THINGNAME_MAX_LENGTH>,
 /// ```
 /// use aws_iot_embedded_sdk_rust::jobs::Topic::*;
 /// use aws_iot_embedded_sdk_rust::{jobs};
-/// 
+///
 /// let topic = jobs::describe("chloe", API_JOBID_NEXT).unwrap();
 /// assert_eq!(&topic[..], "$aws/things/chloe/jobs/$next/get")
 ///
 /// ```
 pub fn describe(thing_name: &str, id: &str) -> Result<ArrayString<THINGNAME_MAX_LENGTH>, Error> {
     is_valid_thing_name(thing_name)?;
-    is_valid_job_id(id)?;
+    if id != API_JOBID_NEXT {
+        is_valid_job_id(id)?
+    };
     let mut s = ArrayString::<THINGNAME_MAX_LENGTH>::new();
     s.push_str(AWS_THINGS_PREFIX);
     s.push_str(thing_name);
@@ -285,11 +288,6 @@ mod tests {
     fn start_next() {
         let topic = jobs::start_next("chloe").unwrap();
         assert_eq!(&topic[..], "$aws/things/chloe/jobs/start-next");
-    }
-    #[test]
-    fn describe() {
-        let topic = jobs::describe("chloe", "example-job-01").unwrap();
-        assert_eq!(&topic[..], "$aws/things/chloe/jobs/example-job-01/get");
     }
     #[test]
     fn update() {

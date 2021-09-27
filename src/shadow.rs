@@ -10,8 +10,8 @@ const OP_DELETE: &str = "delete";
 const OP_UPDATE: &str = "update";
 const SUFFIX_DOCUMENTS: &str = "/documents";
 const SUFFIX_DELTA: &str = "/delta";
-/// A shadow topic string takes one of the two forms, 
-/// in the case of an unnamed ("Classic") shadow. 
+/// A shadow topic string takes one of the two forms,
+/// in the case of an unnamed ("Classic") shadow.
 /// Or, in the case of a named shadow
 /// The shadow_name part is None when unnamed shadow.
 #[derive(Debug)]
@@ -45,7 +45,7 @@ pub enum Topic {
 /// use aws_iot_embedded_sdk_rust::shadow::Topic::*;
 /// use aws_iot_embedded_sdk_rust::{shadow};
 /// use arrayvec::{ArrayString, ArrayVec};
-/// 
+///
 /// let topic = shadow::get_topic(shadow::Topic::Get, "chloe", None).unwrap();
 /// assert_eq!("$aws/things/chloe/shadow/get", topic.as_str())
 /// ```
@@ -98,16 +98,16 @@ fn suffix(topic_type: &Topic) -> &str {
 }
 
 /// Given the topic string of an incoming message, determine whether it is
-/// related to a device shadow; 
+/// related to a device shadow;
 ///
-/// If it is, return information about the type of device shadow message, 
-/// and the Thing Name and Shadow Name inside of the topic string. 
+/// If it is, return information about the type of device shadow message,
+/// and the Thing Name and Shadow Name inside of the topic string.
 ///
 /// # Example
 /// ```
 /// use aws_iot_embedded_sdk_rust::shadow::Topic::*;
 /// use aws_iot_embedded_sdk_rust::{shadow};
-/// 
+///
 /// let topic = "$aws/things/chloe/shadow/name/common/get/rejected";
 /// let shadow = shadow::match_topic(topic).unwrap();
 ///

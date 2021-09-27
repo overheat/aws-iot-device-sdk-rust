@@ -14,16 +14,16 @@ pub struct ThingDefender<'a> {
     pub api: Topic,
 }
 
-/// 
+///
 /// A Defender topic has the following format:"<Prefix><Thing Name><Bridge><Report Format><Suffix>"
-/// 
+///
 /// Where:
 ///     - Prefix = $aws/things/
 ///     - Thing Name = Name of the thing.
 ///     - Bridge = /defender/metrics/
 ///     - Report Format = json or cbor
 ///     - Suffix = /accepted or /rejected or empty
-/// 
+///
 #[derive(Debug, PartialEq)]
 pub enum Topic {
     JsonReportPublish,
@@ -45,7 +45,7 @@ pub enum Topic {
 /// ```
 /// use aws_iot_embedded_sdk_rust::defender::Topic::*;
 /// use aws_iot_embedded_sdk_rust::{defender};
-/// 
+///
 /// let topic = defender::get_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
 /// assert_eq!(&topic[..], "$aws/things/chloe/defender/metrics/json")
 /// ```
@@ -85,7 +85,7 @@ fn suffix(topic_type: &Topic) -> &str {
 /// ```
 /// use aws_iot_embedded_sdk_rust::defender::Topic::*;
 /// use aws_iot_embedded_sdk_rust::{defender};
-/// 
+///
 /// let defender =
 ///     defender::match_topic("$aws/things/chloe/defender/metrics/json/accepted").unwrap();
 ///
