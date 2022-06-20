@@ -7,7 +7,7 @@ const API_CHANGED: &str = "notify";
 ///
 /// # Example
 /// ```
-/// use aws_iot_embedded_sdk_rust::{tunneling};
+/// use aws_iot_device_sdk::{tunneling};
 ///
 /// let tunnels = tunneling::match_topic("$aws/things/chloe/tunnels/notify");
 /// assert_eq!(tunnels, Ok(()));

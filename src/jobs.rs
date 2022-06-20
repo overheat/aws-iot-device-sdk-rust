@@ -42,8 +42,8 @@ pub enum Topic {
 ///
 /// # Example
 /// ```
-/// use aws_iot_embedded_sdk_rust::jobs::Topic::*;
-/// use aws_iot_embedded_sdk_rust::{jobs};
+/// use aws_iot_device_sdk::jobs::Topic::*;
+/// use aws_iot_device_sdk::{jobs};
 ///
 /// let jobs = jobs::match_topic("$aws/things/chloe/jobs/notify-next").unwrap();
 /// assert_eq!(jobs.api, jobs::Topic::NextJobChanged);
@@ -100,13 +100,13 @@ fn suffix(topic_type: &Topic) -> &str {
 ///
 /// # Example
 /// ```
-/// use aws_iot_embedded_sdk_rust::jobs::Topic::*;
-/// use aws_iot_embedded_sdk_rust::{jobs};
+/// use aws_iot_device_sdk::jobs::Topic::*;
+/// use aws_iot_device_sdk::{jobs};
 ///
-/// let jobs = jobs::match_topic("$aws/things/chloe/jobs/API_JOBID_NEXT/get/accepted").unwrap();
+/// let jobs = jobs::match_topic("$aws/things/chloe/jobs/$next/get/accepted").unwrap();
 /// assert_eq!(jobs.api, jobs::Topic::DescribeSuccess);
 /// let id = jobs.id.unwrap();
-/// assert_eq!(&id[..], API_JOBID_NEXT)
+/// assert_eq!(&id[..], "$next")
 ///
 /// ```
 pub fn match_topic(topic: &str) -> Result<ThingJobs, Error> {
@@ -201,10 +201,10 @@ pub fn start_next(thing_name: &str) -> Result<ArrayString<THINGNAME_MAX_LENGTH>,
 ///
 /// # Example
 /// ```
-/// use aws_iot_embedded_sdk_rust::jobs::Topic::*;
-/// use aws_iot_embedded_sdk_rust::{jobs};
+/// use aws_iot_device_sdk::jobs::Topic::*;
+/// use aws_iot_device_sdk::{jobs};
 ///
-/// let topic = jobs::describe("chloe", API_JOBID_NEXT).unwrap();
+/// let topic = jobs::describe("chloe", "$next").unwrap();
 /// assert_eq!(&topic[..], "$aws/things/chloe/jobs/$next/get")
 ///
 /// ```

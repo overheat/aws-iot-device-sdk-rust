@@ -43,8 +43,8 @@ pub enum Topic {
 ///
 /// # Example
 /// ```
-/// use aws_iot_embedded_sdk_rust::defender::Topic::*;
-/// use aws_iot_embedded_sdk_rust::{defender};
+/// use aws_iot_device_sdk::defender::Topic::*;
+/// use aws_iot_device_sdk::{defender};
 ///
 /// let topic = defender::get_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
 /// assert_eq!(&topic[..], "$aws/things/chloe/defender/metrics/json")
@@ -83,8 +83,8 @@ fn suffix(topic_type: &Topic) -> &str {
 ///
 /// # Example
 /// ```
-/// use aws_iot_embedded_sdk_rust::defender::Topic::*;
-/// use aws_iot_embedded_sdk_rust::{defender};
+/// use aws_iot_device_sdk::defender::Topic::*;
+/// use aws_iot_device_sdk::{defender};
 ///
 /// let defender =
 ///     defender::match_topic("$aws/things/chloe/defender/metrics/json/accepted").unwrap();

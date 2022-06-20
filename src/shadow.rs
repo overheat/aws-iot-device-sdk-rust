@@ -42,8 +42,8 @@ pub enum Topic {
 ///
 /// # Example
 /// ```
-/// use aws_iot_embedded_sdk_rust::shadow::Topic::*;
-/// use aws_iot_embedded_sdk_rust::{shadow};
+/// use aws_iot_device_sdk::shadow::Topic::*;
+/// use aws_iot_device_sdk::{shadow};
 /// use arrayvec::{ArrayString, ArrayVec};
 ///
 /// let topic = shadow::get_topic(shadow::Topic::Get, "chloe", None).unwrap();
@@ -105,8 +105,8 @@ fn suffix(topic_type: &Topic) -> &str {
 ///
 /// # Example
 /// ```
-/// use aws_iot_embedded_sdk_rust::shadow::Topic::*;
-/// use aws_iot_embedded_sdk_rust::{shadow};
+/// use aws_iot_device_sdk::shadow::Topic::*;
+/// use aws_iot_device_sdk::{shadow};
 ///
 /// let topic = "$aws/things/chloe/shadow/name/common/get/rejected";
 /// let shadow = shadow::match_topic(topic).unwrap();
