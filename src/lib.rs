@@ -1,7 +1,19 @@
 //! # Overview
 //!
-//! say something.
+//! aws-iot-device-sdk (unofficial)
 //!
+//! The AWS IoT Device SDK is a collection of Rust source files, 
+//! that can be used in embedded applications to securely connect IoT devices
+//! to [AWS IoT Core](https://docs.aws.amazon.com/iot/latest/developerguide/what-is-aws-iot.html).
+//!
+//! It contains ~~MQTT client, HTTP client, JSON Parser,~~ AWS IoT Device Shadow, AWS IoT Jobs, 
+//! and AWS IoT Device Defender libraries. 
+//!
+//! This SDK is distributed in source form, and can be built into customer firmware along with 
+//! application code, other libraries and an operating system (OS) of your choice. 
+//!
+//! These libraries are only dependent on pure Rust libraries, so they can be ported to various OS's - from embedded 
+//! Real Time Operating Systems (RTOS) to Linux/Mac/Windows. 
 //!
 //!
 //!

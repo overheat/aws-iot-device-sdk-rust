@@ -20,7 +20,7 @@ pub struct ThingShadow<'a> {
 }
 
 /// Each of these values describes the type of a shadow message.
-// https://docs.aws.amazon.com/iot/latest/developerguide/device-shadow-mqtt.html
+/// https://docs.aws.amazon.com/iot/latest/developerguide/device-shadow-mqtt.html
 #[derive(Debug, PartialEq)]
 pub enum Topic {
     Get = 0,
