@@ -1,6 +1,6 @@
 [package]
 name = "aws-iot-device-sdk"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["awsa2ron <kaixu@amazon.com>"]
 edition = "2021"
 description = "aws iot device sdk in rust (unofficial)"
