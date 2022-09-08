@@ -3,7 +3,6 @@ use arrayvec::{ArrayString, ArrayVec};
 use self::Topic::*;
 use crate::common::*;
 
-const API_BRIDGE: &str = "/defender/metrics/";
 const API_JSON_FORMAT: &str = "json";
 const API_CBOR_FORMAT: &str = "cbor";
 
@@ -57,7 +56,7 @@ pub fn get_topic(
     let mut s = ArrayString::<DEFENDER_TOPIC_MAX_LENGTH>::new();
     s.push_str(AWS_THINGS_PREFIX);
     s.push_str(thing_name);
-    s.push_str(API_BRIDGE);
+    s.push_str(DEFENDER_API_BRIDGE);
     s.push_str(op(&api));
     s.push_str(suffix(&api));
 
@@ -101,7 +100,7 @@ pub fn match_topic(topic: &str) -> Result<ThingDefender, Error> {
     let (thing_name, mut s) = s.split_at(mid?);
     is_valid_thing_name(thing_name)?;
 
-    s = is_valid_bridge(s, API_BRIDGE)?;
+    s = is_valid_bridge(s, DEFENDER_API_BRIDGE)?;
 
     let v: ArrayVec<&str, 16> = s.split('/').collect();
     let api: Topic;

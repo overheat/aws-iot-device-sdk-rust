@@ -13,19 +13,13 @@ pub mod jobs;
 pub mod shadow;
 pub mod tunneling;
 
-pub use common::Error;
-
-pub use common::is_valid_bridge;
-pub use common::is_valid_job_id;
-pub use common::is_valid_mqtt_topic;
-pub use common::is_valid_prefix;
-pub use common::is_valid_shadow_name;
-pub use common::is_valid_thing_name;
-
+pub use common::*;
 
 #[derive(Debug, PartialEq)]
 pub enum TopicType {
-    Shadow = 0,
+    Other = 0,
+    NamedShadow,
+    Shadow,
     Jobs,
     Defender,
     Tunneling,
@@ -42,8 +36,20 @@ pub enum TopicType {
 /// let topic = "$aws/things/chloe/shadow/name/common/get/rejected";
 /// let topic_type = match_topic_type(topic).unwrap();
 ///
-/// assert_eq!(topic_type, TopicType::Shadow);
+/// assert_eq!(topic_type, TopicType::NamedShadow);
 /// ```
 pub fn match_topic_type<'a>(topic: &'a str) -> Result<TopicType, Error> {
-    Ok(TopicType::Shadow)
+    is_valid_mqtt_topic(topic)?;
+
+    let s = is_valid_prefix(topic, AWS_THINGS_PREFIX)?;
+
+    let mid = s.find('/').ok_or(Error::NoMatch);
+    let (thing_name, s) = s.split_at(mid?);
+    is_valid_thing_name(thing_name)?;
+    if s.starts_with(NAMED_SHADOW_API_BRIDGE)   { Ok(TopicType::NamedShadow) }
+    else if s.starts_with(SHADOW_API_BRIDGE)    { Ok(TopicType::Shadow) }
+    else if s.starts_with(JOBS_API_BRIDGE)      { Ok(TopicType::Jobs) }
+    else if s.starts_with(DEFENDER_API_BRIDGE)  { Ok(TopicType::Defender) }
+    else if s.starts_with(TUNNELS_API_BRIDGE)   { Ok(TopicType::Tunneling) }
+    else { Err(Error::NoMatch) }
 }

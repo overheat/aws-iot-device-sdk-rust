@@ -3,8 +3,6 @@ use arrayvec::{ArrayString, ArrayVec};
 
 use self::Topic::*;
 
-const API_BRIDGE: &str = "/shadow/";
-const API_BRIDGE_NAME: &str = "/shadow/name/";
 const OP_GET: &str = "get";
 const OP_DELETE: &str = "delete";
 const OP_UPDATE: &str = "update";
@@ -62,7 +60,7 @@ pub fn get_topic(
     match named {
         // Classic shadow topic
         None => {
-            s.push_str(API_BRIDGE);
+            s.push_str(SHADOW_API_BRIDGE);
             s.push_str(op(&topic_type));
             s.push_str(suffix(&topic_type));
             Ok(s)
@@ -70,7 +68,7 @@ pub fn get_topic(
         // Named shadow topic
         Some(shadow_name) => {
             is_valid_shadow_name(shadow_name)?;
-            s.push_str(API_BRIDGE_NAME);
+            s.push_str(NAMED_SHADOW_API_BRIDGE);
             s.push_str(shadow_name);
             s.push_str("/");
             s.push_str(op(&topic_type));
@@ -124,7 +122,7 @@ pub fn match_topic<'a>(topic: &'a str) -> Result<ThingShadow, Error> {
     let (thing_name, s) = s.split_at(mid?);
     is_valid_thing_name(thing_name)?;
 
-    let s = is_valid_bridge(s, API_BRIDGE)?;
+    let s = is_valid_bridge(s, SHADOW_API_BRIDGE)?;
 
     let v: ArrayVec<&str, 16> = s.split('/').collect();
     match v[..] {
