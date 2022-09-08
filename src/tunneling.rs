@@ -1,6 +1,5 @@
 use crate::common::*;
 
-const API_BRIDGE: &str = "/tunnels/";
 const API_CHANGED: &str = "notify";
 
 /// Check if the given topic is one of the Device Defender topics.
@@ -23,7 +22,7 @@ pub fn match_topic(topic: &str) -> Result<(), Error> {
     let (thing_name, mut s) = s.split_at(mid?);
     is_valid_thing_name(thing_name)?;
 
-    s = is_valid_bridge(s, API_BRIDGE)?;
+    s = is_valid_bridge(s, TUNNELS_API_BRIDGE)?;
 
     if s == API_CHANGED {
         return Ok(());

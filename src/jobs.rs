@@ -3,7 +3,6 @@ use arrayvec::{ArrayString, ArrayVec};
 
 use self::Topic::*;
 
-const API_BRIDGE: &str = "/jobs/";
 const API_JOBSCHANGED: &str = "notify";
 const API_NEXTJOBCHANGED: &str = "notify-next";
 const API_GETPENDING: &str = "get";
@@ -49,7 +48,7 @@ pub enum Topic {
 /// assert_eq!(jobs.api, jobs::Topic::NextJobChanged);
 /// assert_eq!(jobs.id, None);
 /// ```
-pub fn get_topic(
+pub fn assemble_topic(
     thing_name: &str,
     api: Topic,
 ) -> Result<ArrayString<JOBS_TOPIC_MAX_LENGTH>, Error> {
@@ -57,7 +56,7 @@ pub fn get_topic(
     let mut s = ArrayString::<JOBS_TOPIC_MAX_LENGTH>::new();
     s.push_str(AWS_THINGS_PREFIX);
     s.push_str(thing_name);
-    s.push_str(API_BRIDGE);
+    s.push_str(JOBS_API_BRIDGE);
     s.push_str(id(&api));
     s.push_str(op(&api));
     s.push_str(suffix(&api));
@@ -118,7 +117,7 @@ pub fn match_topic(topic: &str) -> Result<ThingJobs, Error> {
     let (thing_name, mut s) = s.split_at(mid?);
     is_valid_thing_name(thing_name)?;
 
-    s = is_valid_bridge(s, API_BRIDGE)?;
+    s = is_valid_bridge(s, JOBS_API_BRIDGE)?;
 
     let v: ArrayVec<&str, 16> = s.split('/').collect();
     let api: Topic;
@@ -180,7 +179,7 @@ pub fn get_pending(thing_name: &str) -> Result<ArrayString<THINGNAME_MAX_LENGTH>
     let mut s = ArrayString::<THINGNAME_MAX_LENGTH>::new();
     s.push_str(AWS_THINGS_PREFIX);
     s.push_str(thing_name);
-    s.push_str(API_BRIDGE);
+    s.push_str(JOBS_API_BRIDGE);
     s.push_str(API_GETPENDING);
 
     Ok(s)
@@ -192,7 +191,7 @@ pub fn start_next(thing_name: &str) -> Result<ArrayString<THINGNAME_MAX_LENGTH>,
     let mut s = ArrayString::<THINGNAME_MAX_LENGTH>::new();
     s.push_str(AWS_THINGS_PREFIX);
     s.push_str(thing_name);
-    s.push_str(API_BRIDGE);
+    s.push_str(JOBS_API_BRIDGE);
     s.push_str(API_STARTNEXT);
 
     Ok(s)
@@ -216,7 +215,7 @@ pub fn describe(thing_name: &str, id: &str) -> Result<ArrayString<THINGNAME_MAX_
     let mut s = ArrayString::<THINGNAME_MAX_LENGTH>::new();
     s.push_str(AWS_THINGS_PREFIX);
     s.push_str(thing_name);
-    s.push_str(API_BRIDGE);
+    s.push_str(JOBS_API_BRIDGE);
     s.push_str(id);
     s.push_str("/");
     s.push_str(API_DESCRIBE);
@@ -231,7 +230,7 @@ pub fn update(thing_name: &str, id: &str) -> Result<ArrayString<THINGNAME_MAX_LE
     let mut s = ArrayString::<THINGNAME_MAX_LENGTH>::new();
     s.push_str(AWS_THINGS_PREFIX);
     s.push_str(thing_name);
-    s.push_str(API_BRIDGE);
+    s.push_str(JOBS_API_BRIDGE);
     s.push_str(id);
     s.push_str("/");
     s.push_str(API_UPDATE);
@@ -243,20 +242,20 @@ pub fn update(thing_name: &str, id: &str) -> Result<ArrayString<THINGNAME_MAX_LE
 mod tests {
     use crate::jobs;
     #[test]
-    fn get_topic_notify_next() {
-        let topic = jobs::get_topic("chloe", jobs::Topic::NextJobChanged).unwrap();
+    fn assemble_topic_notify_next() {
+        let topic = jobs::assemble_topic("chloe", jobs::Topic::NextJobChanged).unwrap();
         assert_eq!(&topic[..], "$aws/things/chloe/jobs/notify-next");
     }
 
     #[test]
-    fn get_topic_get_rejected() {
-        let topic = jobs::get_topic("chloe", jobs::Topic::GetPendingFailed).unwrap();
+    fn assemble_topic_get_rejected() {
+        let topic = jobs::assemble_topic("chloe", jobs::Topic::GetPendingFailed).unwrap();
         assert_eq!(&topic[..], "$aws/things/chloe/jobs/get/rejected");
     }
 
     #[test]
-    fn get_topic_id_update_rejected() {
-        let topic = jobs::get_topic("chloe", jobs::Topic::UpdateFailed).unwrap();
+    fn assemble_topic_id_update_rejected() {
+        let topic = jobs::assemble_topic("chloe", jobs::Topic::UpdateFailed).unwrap();
         assert_eq!(&topic[..], "$aws/things/chloe/jobs/+/update/rejected");
     }
 

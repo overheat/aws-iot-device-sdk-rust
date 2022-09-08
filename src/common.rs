@@ -12,6 +12,12 @@ pub const SHADOW_TOPIC_MAX_LENGTH: usize = THINGNAME_MAX_LENGTH + SHADOW_NAME_LE
 
 pub const AWS_THINGS_PREFIX: &str = "$aws/things/";
 
+pub const DEFENDER_API_BRIDGE: &str = "/defender/metrics/";
+pub const JOBS_API_BRIDGE: &str = "/jobs/";
+pub const SHADOW_API_BRIDGE: &str = "/shadow/";
+pub const NAMED_SHADOW_API_BRIDGE: &str = "/shadow/name/";
+pub const TUNNELS_API_BRIDGE: &str = "/tunnels/";
+
 pub const SUFFIX_ACCEPTED: &str = "/accepted";
 pub const SUFFIX_REJECTED: &str = "/rejected";
 

@@ -1,20 +1,25 @@
+/// This library uses the "Full Jitter" strategy for the exponential backoff with jitter algorithm.
+/// More information about the algorithm can be seen in the 
+/// [Exponential Backoff and Jitter](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/) 
+/// AWS blog.
 #[derive(Debug, PartialEq)]
 pub struct BackoffAlgorithm {
-    // The maximum backoff base (in milliseconds) between consecutive retry attempts.
+    /// The maximum backoff base (in milliseconds) between consecutive retry attempts.
     pub max: usize,
-    // The total number of retry attempts completed.
-    // This value is incremented on every call to #BackoffAlgorithm_GetNextBackoff API.
-    // pub attemptsDone: usize,
-    // The maximum backoff value (in milliseconds) for the next retry attempt.
+    /// The total number of retry attempts completed.
+    /// This value is incremented on every call to #BackoffAlgorithm_GetNextBackoff API.
+    /// pub attemptsDone: usize,
+    /// The maximum backoff value (in milliseconds) for the next retry attempt.
     pub base: usize,
-    // The maximum number of retry attempts.
-    // pub maxRetryAttempts: usize,
+    /// The maximum number of retry attempts.
+    /// pub maxRetryAttempts: usize,
     power: usize,
     pub value: usize,
     pub rand: Option<usize>,
 }
 
 impl BackoffAlgorithm {
+    /// Initializes the context for using backoff algorithm.
     pub fn new(base: usize, max: usize, rand: Option<usize>) -> BackoffAlgorithm {
         BackoffAlgorithm {
             base,
@@ -24,6 +29,8 @@ impl BackoffAlgorithm {
             rand,
         }
     }
+    /// Simple exponential backoff and jitter function that provides the
+    /// delay value for the next retry attempt.
     pub fn get(&self) -> usize {
         self.value
     }

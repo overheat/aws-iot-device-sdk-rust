@@ -3,7 +3,6 @@ use arrayvec::{ArrayString, ArrayVec};
 use self::Topic::*;
 use crate::common::*;
 
-const API_BRIDGE: &str = "/defender/metrics/";
 const API_JSON_FORMAT: &str = "json";
 const API_CBOR_FORMAT: &str = "cbor";
 
@@ -46,10 +45,10 @@ pub enum Topic {
 /// use aws_iot_device_sdk::defender::Topic::*;
 /// use aws_iot_device_sdk::{defender};
 ///
-/// let topic = defender::get_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
+/// let topic = defender::assemble_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
 /// assert_eq!(&topic[..], "$aws/things/chloe/defender/metrics/json")
 /// ```
-pub fn get_topic(
+pub fn assemble_topic(
     thing_name: &str,
     api: Topic,
 ) -> Result<ArrayString<DEFENDER_TOPIC_MAX_LENGTH>, Error> {
@@ -57,7 +56,7 @@ pub fn get_topic(
     let mut s = ArrayString::<DEFENDER_TOPIC_MAX_LENGTH>::new();
     s.push_str(AWS_THINGS_PREFIX);
     s.push_str(thing_name);
-    s.push_str(API_BRIDGE);
+    s.push_str(DEFENDER_API_BRIDGE);
     s.push_str(op(&api));
     s.push_str(suffix(&api));
 
@@ -101,7 +100,7 @@ pub fn match_topic(topic: &str) -> Result<ThingDefender, Error> {
     let (thing_name, mut s) = s.split_at(mid?);
     is_valid_thing_name(thing_name)?;
 
-    s = is_valid_bridge(s, API_BRIDGE)?;
+    s = is_valid_bridge(s, DEFENDER_API_BRIDGE)?;
 
     let v: ArrayVec<&str, 16> = s.split('/').collect();
     let api: Topic;
@@ -125,14 +124,14 @@ pub fn match_topic(topic: &str) -> Result<ThingDefender, Error> {
 mod tests {
     use crate::defender;
     #[test]
-    fn get_topic_json() {
-        let topic = defender::get_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
+    fn assemble_topic_json() {
+        let topic = defender::assemble_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
         assert_eq!(&topic[..], "$aws/things/chloe/defender/metrics/json");
     }
 
     #[test]
-    fn get_topic_cbor_rejected() {
-        let topic = defender::get_topic("chloe", defender::Topic::CborReportRejected).unwrap();
+    fn assemble_topic_cbor_rejected() {
+        let topic = defender::assemble_topic("chloe", defender::Topic::CborReportRejected).unwrap();
         assert_eq!(
             &topic[..],
             "$aws/things/chloe/defender/metrics/cbor/rejected"

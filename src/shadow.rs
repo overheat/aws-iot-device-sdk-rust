@@ -3,8 +3,6 @@ use arrayvec::{ArrayString, ArrayVec};
 
 use self::Topic::*;
 
-const API_BRIDGE: &str = "/shadow/";
-const API_BRIDGE_NAME: &str = "/shadow/name/";
 const OP_GET: &str = "get";
 const OP_DELETE: &str = "delete";
 const OP_UPDATE: &str = "update";
@@ -22,7 +20,7 @@ pub struct ThingShadow<'a> {
 }
 
 /// Each of these values describes the type of a shadow message.
-// https://docs.aws.amazon.com/iot/latest/developerguide/device-shadow-mqtt.html
+/// https://docs.aws.amazon.com/iot/latest/developerguide/device-shadow-mqtt.html
 #[derive(Debug, PartialEq)]
 pub enum Topic {
     Get = 0,
@@ -46,11 +44,11 @@ pub enum Topic {
 /// use aws_iot_device_sdk::{shadow};
 /// use arrayvec::{ArrayString, ArrayVec};
 ///
-/// let topic = shadow::get_topic(shadow::Topic::Get, "chloe", None).unwrap();
+/// let topic = shadow::assemble_topic(shadow::Topic::Get, "chloe", None).unwrap();
 /// assert_eq!("$aws/things/chloe/shadow/get", topic.as_str())
 /// ```
 
-pub fn get_topic(
+pub fn assemble_topic(
     topic_type: Topic,
     thing_name: &str,
     named: Option<&str>,
@@ -62,7 +60,7 @@ pub fn get_topic(
     match named {
         // Classic shadow topic
         None => {
-            s.push_str(API_BRIDGE);
+            s.push_str(SHADOW_API_BRIDGE);
             s.push_str(op(&topic_type));
             s.push_str(suffix(&topic_type));
             Ok(s)
@@ -70,7 +68,7 @@ pub fn get_topic(
         // Named shadow topic
         Some(shadow_name) => {
             is_valid_shadow_name(shadow_name)?;
-            s.push_str(API_BRIDGE_NAME);
+            s.push_str(NAMED_SHADOW_API_BRIDGE);
             s.push_str(shadow_name);
             s.push_str("/");
             s.push_str(op(&topic_type));
@@ -124,7 +122,7 @@ pub fn match_topic<'a>(topic: &'a str) -> Result<ThingShadow, Error> {
     let (thing_name, s) = s.split_at(mid?);
     is_valid_thing_name(thing_name)?;
 
-    let s = is_valid_bridge(s, API_BRIDGE)?;
+    let s = is_valid_bridge(s, SHADOW_API_BRIDGE)?;
 
     let v: ArrayVec<&str, 16> = s.split('/').collect();
     match v[..] {
@@ -167,17 +165,17 @@ mod tests {
     use crate::shadow;
     #[test]
     fn assemble_named_topic_string() {
-        let topic = shadow::get_topic(shadow::Topic::Get, "chloe", Some("common")).unwrap();
+        let topic = shadow::assemble_topic(shadow::Topic::Get, "chloe", Some("common")).unwrap();
         assert_eq!("$aws/things/chloe/shadow/name/common/get", topic.as_str());
     }
     #[test]
     fn assemble_classic_topic_string() {
-        let topic = shadow::get_topic(shadow::Topic::Get, "chloe", None).unwrap();
+        let topic = shadow::assemble_topic(shadow::Topic::Get, "chloe", None).unwrap();
         assert_eq!("$aws/things/chloe/shadow/get", topic.as_str());
     }
     #[test]
     fn assemble_classic_topic_string_suffix() {
-        let topic = shadow::get_topic(shadow::Topic::GetAccepted, "chloe", None).unwrap();
+        let topic = shadow::assemble_topic(shadow::Topic::GetAccepted, "chloe", None).unwrap();
         assert_eq!("$aws/things/chloe/shadow/get/accepted", topic.as_str());
     }
     #[test]
