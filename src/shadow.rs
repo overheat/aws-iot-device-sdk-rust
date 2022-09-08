@@ -44,11 +44,11 @@ pub enum Topic {
 /// use aws_iot_device_sdk::{shadow};
 /// use arrayvec::{ArrayString, ArrayVec};
 ///
-/// let topic = shadow::get_topic(shadow::Topic::Get, "chloe", None).unwrap();
+/// let topic = shadow::assemble_topic(shadow::Topic::Get, "chloe", None).unwrap();
 /// assert_eq!("$aws/things/chloe/shadow/get", topic.as_str())
 /// ```
 
-pub fn get_topic(
+pub fn assemble_topic(
     topic_type: Topic,
     thing_name: &str,
     named: Option<&str>,
@@ -165,17 +165,17 @@ mod tests {
     use crate::shadow;
     #[test]
     fn assemble_named_topic_string() {
-        let topic = shadow::get_topic(shadow::Topic::Get, "chloe", Some("common")).unwrap();
+        let topic = shadow::assemble_topic(shadow::Topic::Get, "chloe", Some("common")).unwrap();
         assert_eq!("$aws/things/chloe/shadow/name/common/get", topic.as_str());
     }
     #[test]
     fn assemble_classic_topic_string() {
-        let topic = shadow::get_topic(shadow::Topic::Get, "chloe", None).unwrap();
+        let topic = shadow::assemble_topic(shadow::Topic::Get, "chloe", None).unwrap();
         assert_eq!("$aws/things/chloe/shadow/get", topic.as_str());
     }
     #[test]
     fn assemble_classic_topic_string_suffix() {
-        let topic = shadow::get_topic(shadow::Topic::GetAccepted, "chloe", None).unwrap();
+        let topic = shadow::assemble_topic(shadow::Topic::GetAccepted, "chloe", None).unwrap();
         assert_eq!("$aws/things/chloe/shadow/get/accepted", topic.as_str());
     }
     #[test]

@@ -45,10 +45,10 @@ pub enum Topic {
 /// use aws_iot_device_sdk::defender::Topic::*;
 /// use aws_iot_device_sdk::{defender};
 ///
-/// let topic = defender::get_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
+/// let topic = defender::assemble_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
 /// assert_eq!(&topic[..], "$aws/things/chloe/defender/metrics/json")
 /// ```
-pub fn get_topic(
+pub fn assemble_topic(
     thing_name: &str,
     api: Topic,
 ) -> Result<ArrayString<DEFENDER_TOPIC_MAX_LENGTH>, Error> {
@@ -124,14 +124,14 @@ pub fn match_topic(topic: &str) -> Result<ThingDefender, Error> {
 mod tests {
     use crate::defender;
     #[test]
-    fn get_topic_json() {
-        let topic = defender::get_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
+    fn assemble_topic_json() {
+        let topic = defender::assemble_topic("chloe", defender::Topic::JsonReportPublish).unwrap();
         assert_eq!(&topic[..], "$aws/things/chloe/defender/metrics/json");
     }
 
     #[test]
-    fn get_topic_cbor_rejected() {
-        let topic = defender::get_topic("chloe", defender::Topic::CborReportRejected).unwrap();
+    fn assemble_topic_cbor_rejected() {
+        let topic = defender::assemble_topic("chloe", defender::Topic::CborReportRejected).unwrap();
         assert_eq!(
             &topic[..],
             "$aws/things/chloe/defender/metrics/cbor/rejected"

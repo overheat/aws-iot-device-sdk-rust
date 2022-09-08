@@ -48,7 +48,7 @@ pub enum Topic {
 /// assert_eq!(jobs.api, jobs::Topic::NextJobChanged);
 /// assert_eq!(jobs.id, None);
 /// ```
-pub fn get_topic(
+pub fn assemble_topic(
     thing_name: &str,
     api: Topic,
 ) -> Result<ArrayString<JOBS_TOPIC_MAX_LENGTH>, Error> {
@@ -242,20 +242,20 @@ pub fn update(thing_name: &str, id: &str) -> Result<ArrayString<THINGNAME_MAX_LE
 mod tests {
     use crate::jobs;
     #[test]
-    fn get_topic_notify_next() {
-        let topic = jobs::get_topic("chloe", jobs::Topic::NextJobChanged).unwrap();
+    fn assemble_topic_notify_next() {
+        let topic = jobs::assemble_topic("chloe", jobs::Topic::NextJobChanged).unwrap();
         assert_eq!(&topic[..], "$aws/things/chloe/jobs/notify-next");
     }
 
     #[test]
-    fn get_topic_get_rejected() {
-        let topic = jobs::get_topic("chloe", jobs::Topic::GetPendingFailed).unwrap();
+    fn assemble_topic_get_rejected() {
+        let topic = jobs::assemble_topic("chloe", jobs::Topic::GetPendingFailed).unwrap();
         assert_eq!(&topic[..], "$aws/things/chloe/jobs/get/rejected");
     }
 
     #[test]
-    fn get_topic_id_update_rejected() {
-        let topic = jobs::get_topic("chloe", jobs::Topic::UpdateFailed).unwrap();
+    fn assemble_topic_id_update_rejected() {
+        let topic = jobs::assemble_topic("chloe", jobs::Topic::UpdateFailed).unwrap();
         assert_eq!(&topic[..], "$aws/things/chloe/jobs/+/update/rejected");
     }
 
