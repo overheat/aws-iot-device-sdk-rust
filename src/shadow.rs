@@ -142,7 +142,7 @@ pub fn match_topic<'a>(topic: &'a str) -> Result<ThingShadow, Error> {
                 shadow_op: find_message_type(op, Some(suffix))?,
             })
         }
-        // Named shadow topic
+        // Named shadow topic without suffix
         [_named, shadow_name, op] => {
             is_valid_shadow_name(shadow_name)?;
             Ok(ThingShadow {
@@ -157,7 +157,7 @@ pub fn match_topic<'a>(topic: &'a str) -> Result<ThingShadow, Error> {
             shadow_name: None,
             shadow_op: find_message_type(op, Some(suffix))?,
         }),
-        // Classic shadow topic
+        // Classic shadow topic without suffix
         [op] => Ok(ThingShadow {
             thing_name,
             shadow_name: None,
