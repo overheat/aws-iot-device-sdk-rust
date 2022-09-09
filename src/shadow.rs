@@ -106,12 +106,19 @@ fn suffix(topic_type: &Topic) -> &str {
 /// use aws_iot_device_sdk::shadow::Topic::*;
 /// use aws_iot_device_sdk::{shadow};
 ///
-/// let topic = "$aws/things/chloe/shadow/name/common/get/rejected";
+/// let topic = "$aws/things/chloe/shadow/name/common/update";
 /// let shadow = shadow::match_topic(topic).unwrap();
 ///
 /// assert_eq!(shadow.thing_name, "chloe");
 /// assert_eq!(shadow.shadow_name.unwrap(), "common");
-/// assert_eq!(shadow.shadow_op, shadow::Topic::GetRejected);
+/// assert_eq!(shadow.shadow_op, shadow::Topic::Update);
+///
+/// let topic = "$aws/things/chloe/shadow/name/common/update/delta";
+/// let shadow = shadow::match_topic(topic).unwrap();
+///
+/// assert_eq!(shadow.thing_name, "chloe");
+/// assert_eq!(shadow.shadow_name.unwrap(), "common");
+/// assert_eq!(shadow.shadow_op, shadow::Topic::UpdateDelta);
 /// ```
 pub fn match_topic<'a>(topic: &'a str) -> Result<ThingShadow, Error> {
     is_valid_mqtt_topic(topic)?;
@@ -132,30 +139,48 @@ pub fn match_topic<'a>(topic: &'a str) -> Result<ThingShadow, Error> {
             Ok(ThingShadow {
                 thing_name,
                 shadow_name: Some(shadow_name),
-                shadow_op: find_message_type(op, suffix)?,
+                shadow_op: find_message_type(op, Some(suffix))?,
+            })
+        }
+        // Named shadow topic
+        [_named, shadow_name, op] => {
+            is_valid_shadow_name(shadow_name)?;
+            Ok(ThingShadow {
+                thing_name,
+                shadow_name: Some(shadow_name),
+                shadow_op: find_message_type(op, None)?,
             })
         }
         // Classic shadow topic
         [op, suffix] => Ok(ThingShadow {
             thing_name,
             shadow_name: None,
-            shadow_op: find_message_type(op, suffix)?,
+            shadow_op: find_message_type(op, Some(suffix))?,
+        }),
+        // Classic shadow topic
+        [op] => Ok(ThingShadow {
+            thing_name,
+            shadow_name: None,
+            shadow_op: find_message_type(op, None)?,
         }),
         // Not shadow topic
         _ => Err(Error::NoMatch),
     }
 }
 
-fn find_message_type(op: &str, suffix: &str) -> Result<Topic, Error> {
+fn find_message_type(op: &str, suffix: Option<&str>) -> Result<Topic, Error> {
     match (op, suffix) {
-        ("get", "accepted") => Ok(GetAccepted),
-        ("get", "rejected") => Ok(GetRejected),
-        ("delete", "accepted") => Ok(DeleteAccepted),
-        ("delete", "rejected") => Ok(DeleteRejected),
-        ("update", "accepted") => Ok(UpdateAccepted),
-        ("update", "rejected") => Ok(UpdateRejected),
-        ("update", "documents") => Ok(UpdateDocuments),
-        ("update", "delta") => Ok(UpdateDelta),
+        ("get", None) => Ok(Get),
+        ("get", Some("accepted")) => Ok(GetAccepted),
+        ("get", Some("rejected")) => Ok(GetRejected),
+        ("delete", None) => Ok(Delete),
+        ("delete", Some("accepted")) => Ok(DeleteAccepted),
+        ("delete", Some("rejected")) => Ok(DeleteRejected),
+        ("update", None) => Ok(Update),
+        ("update", Some("accepted")) => Ok(UpdateAccepted),
+        ("update", Some("rejected")) => Ok(UpdateRejected),
+        ("update", Some("documents")) => Ok(UpdateDocuments),
+        ("update", Some("delta")) => Ok(UpdateDelta),
         _ => Err(Error::MessageTypeParseFailed),
     }
 }
