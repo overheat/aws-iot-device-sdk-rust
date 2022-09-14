@@ -1,3 +1,5 @@
+use thiserror_no_std::Error;
+
 // Limit imposed by the mqtt spec
 pub const MQTT_TOPIC_LENGTH_MAX: usize = 65535;
 
@@ -24,16 +26,24 @@ pub const SUFFIX_REJECTED: &str = "/rejected";
 pub const ACCEPTED: &str = "accepted";
 pub const REJECTED: &str = "rejected";
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Error, Debug)]
 pub enum Error {
-    FAIL,                   /* function encountered error. */
-    MqttTopicFailed,        /* Input mqtt topic is invalid. */
-    ThingnameParseFailed,   /* Could not parse the thing name. */
-    MessageTypeParseFailed, /* Could not parse the type. */
-    RootParseFailed,        /* Could not parse the root. */
-    ShadownameParseFailed, /* Could not parse the shadow name (in the case of a named shadow topic). */
-    JobsIdParseFailed,     /* Could not parse the job id. */
-    NoMatch,               /* The provided topic does not match any defender topic. */
+    #[error("function encountered error.")]
+    FAIL,
+    #[error("Input mqtt topic is invalid.")]
+    MqttTopicFailed,
+    #[error("Could not parse the thing name.")]
+    ThingnameParseFailed,
+    #[error("Could not parse the type.")]
+    MessageTypeParseFailed,
+    #[error("Could not parse the root.")]
+    RootParseFailed,
+    #[error("Could not parse the shadow name (in the case of a named shadow topic).")]
+    ShadownameParseFailed,
+    #[error("Could not parse the job id.")]
+    JobsIdParseFailed,
+    #[error("The provided topic does not match any defender topic.")]
+    NoMatch,
 }
 
 /// valid parameters?
